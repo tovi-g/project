@@ -9,6 +9,7 @@ import * as Yup from 'yup'
 import UserService from '../services/user.service'
 import { connect } from 'react-redux'
 import { actions } from '../redux/Action'
+import { values } from 'lodash'
 
 // function mapStateToProps(state) {
 //     return {
@@ -18,8 +19,8 @@ import { actions } from '../redux/Action'
 const mapDispatchToProps = (dispatch) => {
     return {
         
-        setUser: (u) =>  dispatch(actions.setUser(u)),
-        
+        addUser: (u) =>  dispatch(actions.addUser(u)),
+        setSelectedUser:(s)=>dispatch(actions.setSelectedUser(s))
     }
 }
 
@@ -31,13 +32,15 @@ const RegisterSchema = Yup.object().shape({
     phone: Yup.string().required('this feild is required')
 })
 
-function FormRegister({ setUser,addUser,setToken }) {
+function FormRegister({ setSelectedUser,addUser }) {
     
     const handleSubmit = async (values) => {
+        setSelectedUser(values);
         console.log(`${values.name} ${values.email}`)
         try {
             const user = await UserService.register(values);
-            setUser(user.user);
+            addUser(user.user);
+            
            
            
         } catch (err) {
@@ -77,7 +80,7 @@ function FormRegister({ setUser,addUser,setToken }) {
                                     <ErrorMessage name="phone" component="div" />
                                 </div>
                                 <div className="form-group">
-                                    <button  type="submit" className="btn btn-primary">Submit</button>
+                                    <button   type="submit" className="btn btn-primary">Submit</button>
                                 </div>
                             </Form>
                         )
